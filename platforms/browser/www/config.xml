@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.pinchofnom.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Pinch Of Nom</name>
+    <description>
+        Selection of the best slimming world recipes online, breakfast, lunch, dinner, fakeaways, desserts and many more as well as cooking hints, tips and advice.
+    </description>
+    <author email="hello@pinchofnom.com" href="http://pinchofnom.com">
+        Kay F
+    </author>
+    <content src="http://pinchofnom.com" />
+    <icon src="icon.png" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="14" />
+    <preference name="orientation" value="default" />
+    <preference name="fullscreen" value="true" />
+    <preference name="ios-statusbarstyle" value="black-opaque" />
+</widget>
