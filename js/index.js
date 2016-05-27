@@ -21,12 +21,46 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+    
+    function initPushwoosh() {
+    var pushNotification = cordova.require("pushwoosh-pgb-plugin.PushNotification");
+ 
+    //set push notification callback before we initialize the plugin
+    document.addEventListener('push-notification', function(event) {
+                                //get the notification payload
+                                var notification = event.notification;
+ 
+                                //display alert to the user for example
+                                alert(notification.aps.alert);
+                               
+                                //clear the app badge
+                                pushNotification.setApplicationIconBadgeNumber(0);
+                            });
+ 
+    //initialize the plugin
+    pushNotification.onDeviceReady({pw_appid:"4B218-AEDE3"});
+     
+    //register for pushes
+    pushNotification.registerDevice(
+        function(status) {
+            var deviceToken = status['deviceToken'];
+            console.warn('registerDevice: ' + deviceToken);
+        },
+        function(status) {
+            console.warn('failed to register : ' + JSON.stringify(status));
+            alert(JSON.stringify(['failed to register ', status]));
+        }
+    );
+     
+    //reset badges on app start
+    pushNotification.setApplicationIconBadgeNumber(0);
+}
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', app.onDeviceReady, false);
+        document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
     //
@@ -34,8 +68,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-        
-        window.plugins.PushbotsPlugin.initialize("57481fdd4a9efaf3418b4567", {"android":{"sender_id":"GOOGLE_PROJECT_NUMBER"}});
+        initPushwoosh();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -47,63 +80,5 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-        
     }
-    window.plugins.PushbotsPlugin.on("notification:received", function(data){
-	console.log("received:" + JSON.stringify(data));
-});
-window.plugins.PushbotsPlugin.on("registered", function(token){
-	console.log(token);
-});
-
-window.plugins.PushbotsPlugin.getRegistrationId(function(token){
-    console.log("Registration Id:" + token);
-});
-var push = PushNotification.init({
-            "android": {
-                "senderID": "1234567890"
-            },
-            "ios": { "alert": "true", "badge": "true", "sound": "true" },
-            "windows": {}
-        });
-
-        push.on('registration', function (data) {
-            console.log("registration event");
-            //document.getElementById("regId").innerHTML = data.registrationId;
-            alert(data.registrationId)
-            console.log(JSON.stringify(data));
-        });
-
-        push.on('notification', function (data) {
-            console.log("notification event");
-            console.log(JSON.stringify(data));
-            var cards = document.getElementById("cards");
-            var card = '<div class="row">' +
-                  '<div class="col s12 m6">' +
-                  '  <div class="card darken-1">' +
-                  '    <div class="card-content black-text">' +
-                  '      <span class="card-title black-text">' + data.title + '</span>' +
-                  '      <p>' + data.message + '</p>' +
-                  '    </div>' +
-                  '  </div>' +
-                  ' </div>' +
-                  '</div>';
-            cards.innerHTML += card;
-
-            push.finish(function () {
-                console.log('finish successfully called');
-            });
-        });
-
-        push.on('error', function (e) {
-            console.log("push error");
-        });
-
-
-        //  var pushNotification = window.plugins.PushNotification;
-        push.registerDevice({ alert: true, badge: true, sound: true }, function (status) {
-            app.myLog.value += JSON.stringify(['registerDevice status: ', status]) + "\n";
-            app.storeToken(status.deviceToken);
-            alert(status.deviceToken)
-        });
 };
